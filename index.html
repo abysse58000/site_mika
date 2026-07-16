@@ -3,78 +3,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Site Mika — Cinéma privé</title>
+<title>Cinéma privé</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#14111c;
-    --surface:#1f1a2b;
-    --surface-2:#2a2338;
-    --gold:#e7b93f;
-    --gold-dim:#8a712c;
-    --rose:#c1447e;
-    --ivory:#f5f0e6;
-    --muted:#9d93ab;
-    --line:rgba(245,240,230,0.09);
-    --radius:14px;
+    --bg:#140c0b;
+    --surface:#20130f;
+    --surface-2:#2c1a14;
+    --frame:#0f0908;
+    --velvet:#6e1626;
+    --velvet-dark:#3c0d17;
+    --brass:#c99a3d;
+    --brass-bright:#f0cd7c;
+    --cream:#f4e8cf;
+    --muted:#af9a89;
+    --line:rgba(244,232,207,0.09);
+    --radius:10px;
   }
 
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:
-      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(231,185,63,0.08), transparent 60%),
+      radial-gradient(ellipse 900px 480px at 50% -12%, rgba(201,154,61,0.10), transparent 60%),
+      radial-gradient(ellipse 1200px 700px at 50% 110%, rgba(110,22,38,0.18), transparent 60%),
       var(--bg);
-    color:var(--ivory);
+    color:var(--cream);
     font-family:'Inter',sans-serif;
     min-height:100vh;
+    position:relative;
   }
 
-  ::selection{background:var(--gold);color:#1a1420;}
-
+  ::selection{background:var(--brass);color:#1a0f0a;}
   a{color:inherit;}
+
+  /* ---------- Reels: film-strip rails down each side ---------- */
+  .reel-rail{
+    position:fixed;
+    top:0; bottom:0;
+    width:22px;
+    background-color:var(--velvet-dark);
+    background-image:radial-gradient(circle, var(--bg) 5px, transparent 5.3px);
+    background-size:22px 38px;
+    background-position:center;
+    z-index:1;
+    opacity:0.6;
+  }
+  .reel-rail.left{ left:0; }
+  .reel-rail.right{ right:0; }
+  @media (max-width:820px){
+    .reel-rail{ display:none; }
+  }
 
   /* ---------- Marquee header ---------- */
   .marquee{
     position:relative;
-    padding:38px 24px 26px;
+    padding:40px 60px 28px;
     text-align:center;
     border-bottom:1px solid var(--line);
     overflow:hidden;
+    background:linear-gradient(180deg, rgba(110,22,38,0.14), transparent 70%);
   }
   .marquee::before, .marquee::after{
     content:"";
     position:absolute;
-    left:0; right:0;
-    height:3px;
-    background-image:radial-gradient(circle, var(--gold) 1.6px, transparent 1.8px);
-    background-size:22px 3px;
-    opacity:0.55;
+    left:26px; right:26px;
+    height:4px;
+    background-image:radial-gradient(circle, var(--brass) 1.7px, transparent 1.9px);
+    background-size:22px 4px;
+    opacity:0.7;
   }
-  .marquee::before{ top:10px; }
-  .marquee::after{ bottom:10px; }
+  .marquee::before{ top:12px; }
+  .marquee::after{ bottom:12px; }
   @media (prefers-reduced-motion: no-preference){
-    .marquee::before, .marquee::after{
-      animation: twinkle 2.4s ease-in-out infinite alternate;
-    }
+    .marquee::before, .marquee::after{ animation: chase 0.9s linear infinite; }
   }
-  @keyframes twinkle{
-    from{ opacity:0.3; }
-    to{ opacity:0.75; }
-  }
+  @keyframes chase{ from{ background-position-x:0; } to{ background-position-x:22px; } }
 
+  .marquee-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--brass);
+    opacity:0.8;
+    margin:0 0 6px;
+  }
   .marquee h1{
     font-family:'Bebas Neue', sans-serif;
-    font-size:clamp(2.6rem, 7vw, 4.6rem);
+    font-size:clamp(2.6rem, 7vw, 4.8rem);
     letter-spacing:0.09em;
     margin:0;
-    color:var(--gold);
-    text-shadow:0 0 18px rgba(231,185,63,0.35), 0 0 2px rgba(231,185,63,0.6);
+    color:var(--brass-bright);
+    text-shadow:0 0 22px rgba(240,205,124,0.35), 0 0 2px rgba(240,205,124,0.6);
   }
   .marquee p{
-    margin:6px 0 0;
+    margin:8px 0 0;
     color:var(--muted);
     font-size:0.95rem;
     letter-spacing:0.02em;
@@ -84,30 +110,30 @@
   .controls{
     max-width:1180px;
     margin:0 auto;
-    padding:28px 24px 6px;
+    padding:28px 40px 6px;
     display:flex;
     flex-direction:column;
     gap:18px;
+    position:relative;
+    z-index:2;
   }
 
-  .search-row{
-    display:flex;
-    gap:12px;
-  }
+  .search-row{ display:flex; gap:12px; }
   .search-row input{
     flex:1;
     background:var(--surface);
     border:1px solid var(--line);
     border-radius:10px;
     padding:12px 16px;
-    color:var(--ivory);
+    color:var(--cream);
     font-family:'Inter',sans-serif;
     font-size:0.95rem;
     outline:none;
-    transition:border-color .2s;
+    transition:border-color .2s, box-shadow .2s;
   }
   .search-row input:focus{
-    border-color:var(--gold);
+    border-color:var(--brass);
+    box-shadow:0 0 0 3px rgba(201,154,61,0.15);
   }
   .search-row input::placeholder{ color:var(--muted); }
 
@@ -116,31 +142,27 @@
     border:1px solid var(--line);
     color:var(--muted);
     border-radius:10px;
-    padding:0 16px;
+    padding:0 18px;
     cursor:pointer;
     font-family:'Inter',sans-serif;
     font-weight:500;
     font-size:0.9rem;
     transition:.2s;
   }
-  .refresh-btn:hover{ color:var(--gold); border-color:var(--gold-dim); }
-  .refresh-btn:focus-visible, a:focus-visible, button:focus-visible, input:focus-visible{
-    outline:2px solid var(--gold);
+  .refresh-btn:hover{ color:var(--brass-bright); border-color:var(--brass); }
+  .refresh-btn:focus-visible, a:focus-visible, button:focus-visible, input:focus-visible, .card:focus-visible{
+    outline:2px solid var(--brass-bright);
     outline-offset:2px;
   }
 
-  /* ---------- Ticket-style category chips ---------- */
-  .chips{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-  }
+  /* ---------- Ticket-stub category chips ---------- */
+  .chips{ display:flex; flex-wrap:wrap; gap:10px; }
   .chip{
     position:relative;
     padding:9px 20px;
     border-radius:999px;
     background:var(--surface);
-    border:1px solid var(--line);
+    border:1px dashed rgba(244,232,207,0.22);
     color:var(--muted);
     font-size:0.85rem;
     font-weight:600;
@@ -153,14 +175,14 @@
     mask-composite: intersect;
     transition:.18s;
   }
-  .chip:hover{ color:var(--ivory); border-color:var(--gold-dim); }
+  .chip:hover{ color:var(--cream); border-color:var(--brass); }
   .chip.active{
-    background:var(--gold);
-    color:#1a1420;
-    border-color:var(--gold);
+    background:var(--brass);
+    color:#1a0f0a;
+    border-color:var(--brass);
   }
   .chip .count{
-    opacity:0.65;
+    opacity:0.7;
     font-family:'JetBrains Mono',monospace;
     font-size:0.75rem;
     margin-left:6px;
@@ -170,21 +192,32 @@
   .grid-wrap{
     max-width:1180px;
     margin:0 auto;
-    padding:20px 24px 70px;
+    padding:20px 40px 80px;
+    position:relative;
+    z-index:2;
   }
   .cat-heading{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
     font-family:'Bebas Neue', sans-serif;
     letter-spacing:0.05em;
-    font-size:1.4rem;
-    color:var(--rose);
-    margin:34px 0 16px;
+    font-size:1.5rem;
+    color:var(--brass-bright);
+    margin:36px 0 16px;
+  }
+  .cat-heading::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:repeating-linear-gradient(to right, var(--line) 0 6px, transparent 6px 12px);
   }
   .cat-heading:first-child{ margin-top:6px; }
 
   .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(210px,1fr));
-    gap:20px;
+    grid-template-columns:repeat(auto-fill, minmax(212px,1fr));
+    gap:22px;
   }
 
   .card{
@@ -197,9 +230,11 @@
   }
   .card:hover, .card:focus-visible{
     transform:translateY(-4px);
-    border-color:var(--gold-dim);
-    box-shadow:0 12px 28px rgba(0,0,0,0.45), 0 0 0 1px rgba(231,185,63,0.15);
+    border-color:var(--brass);
+    box-shadow:0 14px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,154,61,0.18);
   }
+
+  /* poster framed like a filmstrip: perforated bands top & bottom */
   .poster{
     position:relative;
     aspect-ratio:16/9;
@@ -207,40 +242,54 @@
     align-items:center;
     justify-content:center;
     overflow:hidden;
-    background:linear-gradient(135deg, var(--surface-2), #171320);
+    background:linear-gradient(135deg, var(--surface-2), var(--frame));
+    padding:9px 0;
   }
+  .poster::before, .poster::after{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    height:9px;
+    background-color:var(--frame);
+    background-image:radial-gradient(circle, var(--surface) 3px, transparent 3.2px);
+    background-size:18px 9px;
+    background-position:center;
+    z-index:2;
+  }
+  .poster::before{ top:0; }
+  .poster::after{ bottom:0; }
   .poster img{
     width:100%; height:100%; object-fit:cover;
   }
   .poster .initials{
     font-family:'Bebas Neue', sans-serif;
-    font-size:2.6rem;
+    font-size:2.5rem;
     letter-spacing:0.05em;
-    color:rgba(245,240,230,0.16);
+    color:rgba(244,232,207,0.15);
   }
   .poster .play{
     position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
-    background:rgba(20,17,28,0.0);
+    background:rgba(20,12,11,0.0);
     transition:background .18s;
   }
-  .card:hover .play{ background:rgba(20,17,28,0.35); }
+  .card:hover .play{ background:rgba(20,12,11,0.4); }
   .play svg{
     width:44px; height:44px;
     opacity:0;
     transform:scale(0.8);
     transition:.18s;
-    filter:drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+    filter:drop-shadow(0 4px 10px rgba(0,0,0,0.55));
   }
   .card:hover .play svg{ opacity:1; transform:scale(1); }
 
   .format-badge{
     position:absolute;
-    top:8px;
+    top:14px;
     right:8px;
-    background:rgba(20,17,28,0.75);
-    border:1px solid rgba(245,240,230,0.18);
-    color:var(--ivory);
+    background:rgba(15,9,8,0.8);
+    border:1px solid rgba(244,232,207,0.2);
+    color:var(--cream);
     font-family:'JetBrains Mono',monospace;
     font-size:0.65rem;
     font-weight:600;
@@ -249,11 +298,12 @@
     border-radius:6px;
     text-transform:uppercase;
     pointer-events:none;
+    z-index:3;
   }
   .format-badge.mkv{
-    background:rgba(193,68,126,0.28);
-    border-color:rgba(193,68,126,0.6);
-    color:#f3c8d9;
+    background:rgba(110,22,38,0.4);
+    border-color:rgba(110,22,38,0.7);
+    color:#f6cdd8;
   }
 
   .card-body{ padding:12px 14px 14px; }
@@ -281,11 +331,11 @@
     padding:80px 20px;
     color:var(--muted);
   }
-  .empty svg{ width:56px; height:56px; opacity:0.4; margin-bottom:16px; }
+  .empty svg{ width:56px; height:56px; opacity:0.45; margin-bottom:16px; color:var(--brass); }
   .empty h2{
     font-family:'Bebas Neue', sans-serif;
     letter-spacing:0.04em;
-    color:var(--ivory);
+    color:var(--cream);
     font-size:1.5rem;
     margin:0 0 8px;
   }
@@ -294,13 +344,12 @@
     padding:2px 7px;
     border-radius:6px;
     font-family:'JetBrains Mono',monospace;
-    font-size:0.85rem;
   }
 
-  /* ---------- Modal player ---------- */
+  /* ---------- Modal player (velvet curtain reveal) ---------- */
   .modal-overlay{
     position:fixed; inset:0;
-    background:rgba(10,8,14,0.86);
+    background:rgba(8,5,5,0.88);
     backdrop-filter:blur(6px);
     display:none;
     align-items:center;
@@ -309,10 +358,7 @@
     padding:24px;
   }
   .modal-overlay.open{ display:flex; }
-  .modal{
-    width:100%;
-    max-width:960px;
-  }
+  .modal{ width:100%; max-width:960px; }
   .modal-head{
     display:flex;
     justify-content:space-between;
@@ -323,14 +369,14 @@
   .modal-head h3{
     font-family:'Bebas Neue', sans-serif;
     letter-spacing:0.03em;
-    font-size:1.5rem;
-    color:var(--gold);
+    font-size:1.6rem;
+    color:var(--brass-bright);
     margin:0;
   }
   .modal-close{
     background:var(--surface);
     border:1px solid var(--line);
-    color:var(--ivory);
+    color:var(--cream);
     width:38px; height:38px;
     border-radius:50%;
     cursor:pointer;
@@ -338,21 +384,45 @@
     font-size:1.1rem;
     line-height:1;
   }
-  .modal-close:hover{ border-color:var(--gold); color:var(--gold); }
+  .modal-close:hover{ border-color:var(--brass); color:var(--brass-bright); }
+
+  .screen{
+    position:relative;
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:#000;
+    box-shadow:0 20px 50px rgba(0,0,0,0.6);
+  }
   video{
     width:100%;
-    border-radius:var(--radius);
+    display:block;
     background:#000;
     max-height:78vh;
-    display:block;
   }
+  .curtain{
+    position:absolute;
+    top:0; bottom:0;
+    width:50%;
+    z-index:2;
+    background-image:repeating-linear-gradient(90deg, var(--velvet) 0 16px, var(--velvet-dark) 16px 30px);
+    box-shadow:inset 0 0 40px rgba(0,0,0,0.5);
+    transition:transform .8s cubic-bezier(.65,0,.35,1);
+  }
+  .curtain-left{ left:0; transform:translateX(0%); }
+  .curtain-right{ right:0; transform:translateX(0%); }
+  .screen.open .curtain-left{ transform:translateX(-102%); }
+  .screen.open .curtain-right{ transform:translateX(102%); }
+  @media (prefers-reduced-motion: reduce){
+    .curtain{ transition:none; }
+  }
+
   .video-warning{
     display:none;
     align-items:flex-start;
     gap:10px;
-    background:rgba(193,68,126,0.12);
-    border:1px solid rgba(193,68,126,0.4);
-    color:#f3c8d9;
+    background:rgba(110,22,38,0.16);
+    border:1px solid rgba(110,22,38,0.45);
+    color:#f6cdd8;
     border-radius:10px;
     padding:12px 14px;
     font-size:0.85rem;
@@ -361,10 +431,12 @@
   }
   .video-warning.show{ display:flex; }
   .video-warning svg{ width:20px; height:20px; flex-shrink:0; margin-top:1px; }
-  .video-warning a{ color:var(--gold); text-decoration:underline; }
+  .video-warning a{ color:var(--brass-bright); text-decoration:underline; }
 
   /* ---------- Footer ---------- */
   footer{
+    position:relative;
+    z-index:2;
     text-align:center;
     padding:24px;
     color:var(--muted);
@@ -380,13 +452,19 @@
 
   @media (max-width:560px){
     .search-row{ flex-direction:column; }
+    .controls, .grid-wrap{ padding-left:20px; padding-right:20px; }
+    .marquee{ padding-left:24px; padding-right:24px; }
   }
 </style>
 </head>
 <body>
 
+  <div class="reel-rail left"></div>
+  <div class="reel-rail right"></div>
+
   <header class="marquee">
-    <h1>SITE MIKA</h1>
+    <p class="marquee-eyebrow">Ce soir à l'affiche</p>
+    <h1>Un Ciné</h1>
     <p>Le petit cinéma de la maison</p>
   </header>
 
@@ -400,14 +478,14 @@
 
   <main class="grid-wrap" id="gridWrap">
     <div class="empty">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/><path d="M3 10h18"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/><circle cx="12" cy="5.2" r="1.3"/><circle cx="12" cy="18.8" r="1.3"/><circle cx="18.8" cy="12" r="1.3"/><circle cx="5.2" cy="12" r="1.3"/></svg>
       <h2>Chargement de la liste…</h2>
       <p>Un instant.</p>
     </div>
   </main>
 
   <footer>
-    Ajouté de nouvelles vidéos ? Relance <code>generate_manifest.py</code> sur le NAS, puis pousse le manifest sur GitHub.
+    
   </footer>
 
   <div class="modal-overlay" id="modalOverlay">
@@ -416,7 +494,11 @@
         <h3 id="modalTitle">Titre</h3>
         <button class="modal-close" id="modalClose" aria-label="Fermer">✕</button>
       </div>
-      <video id="modalVideo" controls playsinline></video>
+      <div class="screen" id="screen">
+        <div class="curtain curtain-left"></div>
+        <div class="curtain curtain-right"></div>
+        <video id="modalVideo" controls playsinline></video>
+      </div>
       <div class="video-warning" id="videoWarning">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r="0.6" fill="currentColor" stroke="none"/></svg>
         <span>Ce fichier est au format <strong>.mkv</strong> : certains navigateurs ne savent pas le lire directement (image noire ou son sans image). Si ça ne fonctionne pas ici, essaie de télécharger le fichier et de l'ouvrir avec VLC, ou lance une conversion en .mp4 sur le NAS.</span>
@@ -438,6 +520,7 @@
   const searchInput = document.getElementById('searchInput');
   const refreshBtn = document.getElementById('refreshBtn');
   const modalOverlay = document.getElementById('modalOverlay');
+  const screenEl = document.getElementById('screen');
   const modalVideo = document.getElementById('modalVideo');
   const modalTitle = document.getElementById('modalTitle');
   const modalClose = document.getElementById('modalClose');
@@ -446,7 +529,7 @@
   let manifest = { categories: [] };
   let activeCategory = 'ALL';
 
-  const playIcon = `<svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M8 5v14l11-7z"/></svg>`;
+  const playIcon = `<svg viewBox="0 0 24 24" fill="var(--brass-bright)"><path d="M8 5v14l11-7z"/></svg>`;
 
   function formatDuration(sec){
     if(!sec && sec !== 0) return '—';
@@ -478,7 +561,7 @@
 
   async function loadManifest(){
     gridWrap.innerHTML = `<div class="empty">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/><path d="M3 10h18"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/><circle cx="12" cy="5.2" r="1.3"/><circle cx="12" cy="18.8" r="1.3"/><circle cx="18.8" cy="12" r="1.3"/><circle cx="5.2" cy="12" r="1.3"/></svg>
       <h2>Chargement…</h2></div>`;
     try{
       // Chargé depuis GitHub Pages (local au site) pour éviter les blocages CORS
@@ -517,7 +600,7 @@
 
     if(cats.length === 0){
       gridWrap.innerHTML = `<div class="empty">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/><path d="M3 10h18"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/><circle cx="12" cy="5.2" r="1.3"/><circle cx="12" cy="18.8" r="1.3"/><circle cx="18.8" cy="12" r="1.3"/><circle cx="5.2" cy="12" r="1.3"/></svg>
         <h2>Aucune vidéo pour le moment</h2>
         <p>Dépose des fichiers .mp4 / .mkv dans le dossier, puis exécute<br><code>python3 generate_manifest.py</code></p>
       </div>`;
@@ -567,17 +650,22 @@
   function openModal(file, title, ext){
     modalTitle.textContent = title;
     videoWarning.classList.remove('show');
-    // On va chercher la vidéo directement sur le NAS en ajoutant l'URL de base
+    screenEl.classList.remove('open'); // rideau fermé au départ
+
     modalVideo.src = NAS_URL + '/' + file;
     modalOverlay.classList.add('open');
 
     // Le format .mkv n'est pas garanti lisible nativement par la balise <video>.
-    // On avertit préventivement, et on confirme aussi en cas d'échec réel de lecture.
     if(ext === 'mkv'){
       videoWarning.classList.add('show');
     }
     modalVideo.play().catch(()=>{
       videoWarning.classList.add('show');
+    });
+
+    // Le rideau s'ouvre juste après le lancement de la lecture
+    requestAnimationFrame(()=>{
+      setTimeout(()=> screenEl.classList.add('open'), 120);
     });
   }
 
@@ -587,6 +675,7 @@
 
   function closeModal(){
     modalOverlay.classList.remove('open');
+    screenEl.classList.remove('open');
     modalVideo.pause();
     modalVideo.removeAttribute('src');
     modalVideo.load();

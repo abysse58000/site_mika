@@ -2,29 +2,8 @@
 """
 generate_manifest.py
 ---------------------
-Scanne le dossier courant (ou celui passé en argument) et génère un fichier
-manifest.json utilisé par index.html pour afficher la liste des vidéos.
-
-Organisation attendue :
-  site_mika/
-    index.html
-    generate_manifest.py
-    manifest.json        <- généré par ce script
-    Films/
-      mon_film.mp4
-    Series/
-      episode1.mp4
-    ma_video_racine.mp4   <- regroupée dans la catégorie "Vidéos"
-
-Utilisation :
-  python3 generate_manifest.py
-  python3 generate_manifest.py --with-thumbnails   (nécessite ffmpeg installé)
-  python3 generate_manifest.py /chemin/vers/site_mika
-
-Pour une mise à jour automatique sans PHP : programme ce script dans le
-Planificateur de tâches du NAS (DSM > Panneau de configuration > Planificateur
-de tâches > Créer > Tâche déclenchée > Script défini par l'utilisateur), par
-exemple toutes les 30 minutes.
+Scanne le dossier courant et génère un fichier manifest.json.
+Ce fichier doit ensuite être poussé sur GitHub pour mettre à jour la liste.
 """
 
 import json
@@ -111,7 +90,7 @@ def scan(root: Path, with_thumbnails: bool):
         if entry.is_file() and entry.suffix.lower() in VIDEO_EXTENSIONS:
             add_video(entry, DEFAULT_CATEGORY)
 
-    # Sous-dossiers = catégories (on ignore les dossiers cachés / techniques)
+    # Sous-dossiers = catégories
     for entry in sorted(root.iterdir()):
         if entry.is_dir() and not entry.name.startswith(".") and entry.name != THUMBNAIL_DIRNAME:
             for file_path in sorted(entry.rglob("*")):

@@ -234,6 +234,28 @@
   }
   .card:hover .play svg{ opacity:1; transform:scale(1); }
 
+  .format-badge{
+    position:absolute;
+    top:8px;
+    right:8px;
+    background:rgba(20,17,28,0.75);
+    border:1px solid rgba(245,240,230,0.18);
+    color:var(--ivory);
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.65rem;
+    font-weight:600;
+    letter-spacing:0.04em;
+    padding:3px 7px;
+    border-radius:6px;
+    text-transform:uppercase;
+    pointer-events:none;
+  }
+  .format-badge.mkv{
+    background:rgba(193,68,126,0.28);
+    border-color:rgba(193,68,126,0.6);
+    color:#f3c8d9;
+  }
+
   .card-body{ padding:12px 14px 14px; }
   .card-title{
     font-size:0.92rem;
@@ -324,6 +346,22 @@
     max-height:78vh;
     display:block;
   }
+  .video-warning{
+    display:none;
+    align-items:flex-start;
+    gap:10px;
+    background:rgba(193,68,126,0.12);
+    border:1px solid rgba(193,68,126,0.4);
+    color:#f3c8d9;
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:0.85rem;
+    line-height:1.4;
+    margin-top:12px;
+  }
+  .video-warning.show{ display:flex; }
+  .video-warning svg{ width:20px; height:20px; flex-shrink:0; margin-top:1px; }
+  .video-warning a{ color:var(--gold); text-decoration:underline; }
 
   /* ---------- Footer ---------- */
   footer{
@@ -379,6 +417,10 @@
         <button class="modal-close" id="modalClose" aria-label="Fermer">✕</button>
       </div>
       <video id="modalVideo" controls playsinline></video>
+      <div class="video-warning" id="videoWarning">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r="0.6" fill="currentColor" stroke="none"/></svg>
+        <span>Ce fichier est au format <strong>.mkv</strong> : certains navigateurs ne savent pas le lire directement (image noire ou son sans image). Si ça ne fonctionne pas ici, essaie de télécharger le fichier et de l'ouvrir avec VLC, ou lance une conversion en .mp4 sur le NAS.</span>
+      </div>
     </div>
   </div>
 
@@ -399,6 +441,7 @@
   const modalVideo = document.getElementById('modalVideo');
   const modalTitle = document.getElementById('modalTitle');
   const modalClose = document.getElementById('modalClose');
+  const videoWarning = document.getElementById('videoWarning');
 
   let manifest = { categories: [] };
   let activeCategory = 'ALL';
@@ -426,6 +469,11 @@
 
   function escapeHtml(str){
     return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function getExt(filename){
+    const m = /\.([a-z0-9]+)$/i.exec(filename || '');
+    return m ? m[1].toLowerCase() : '';
   }
 
   async function loadManifest(){
@@ -471,7 +519,7 @@
       gridWrap.innerHTML = `<div class="empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/><path d="M3 10h18"/></svg>
         <h2>Aucune vidéo pour le moment</h2>
-        <p>Dépose des fichiers .mp4 dans le dossier, puis exécute<br><code>python3 generate_manifest.py</code></p>
+        <p>Dépose des fichiers .mp4 / .mkv dans le dossier, puis exécute<br><code>python3 generate_manifest.py</code></p>
       </div>`;
       return;
     }
@@ -487,10 +535,13 @@
         const poster = v.thumbnail
           ? `<img src="${NAS_URL}/${encodeURI(v.thumbnail)}" alt="">`
           : `<span class="initials">${escapeHtml(initials(v.title))}</span>`;
+        const ext = (v.format || getExt(v.file));
+        const badge = ext ? `<span class="format-badge ${ext==='mkv'?'mkv':''}">${escapeHtml(ext)}</span>` : '';
         html += `
-          <div class="card" tabindex="0" role="button" data-file="${encodeURI(v.file)}" data-title="${escapeHtml(v.title)}">
+          <div class="card" tabindex="0" role="button" data-file="${encodeURI(v.file)}" data-title="${escapeHtml(v.title)}" data-ext="${escapeHtml(ext)}">
             <div class="poster">
               ${poster}
+              ${badge}
               <div class="play">${playIcon}</div>
             </div>
             <div class="card-body">
@@ -507,24 +558,39 @@
     gridWrap.innerHTML = html;
 
     gridWrap.querySelectorAll('.card').forEach(card=>{
-      const open = ()=> openModal(card.dataset.file, card.dataset.title);
+      const open = ()=> openModal(card.dataset.file, card.dataset.title, card.dataset.ext);
       card.addEventListener('click', open);
       card.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); } });
     });
   }
 
-  function openModal(file, title){
+  function openModal(file, title, ext){
     modalTitle.textContent = title;
+    videoWarning.classList.remove('show');
     // On va chercher la vidéo directement sur le NAS en ajoutant l'URL de base
     modalVideo.src = NAS_URL + '/' + file;
     modalOverlay.classList.add('open');
-    modalVideo.play().catch(()=>{});
+
+    // Le format .mkv n'est pas garanti lisible nativement par la balise <video>.
+    // On avertit préventivement, et on confirme aussi en cas d'échec réel de lecture.
+    if(ext === 'mkv'){
+      videoWarning.classList.add('show');
+    }
+    modalVideo.play().catch(()=>{
+      videoWarning.classList.add('show');
+    });
   }
+
+  modalVideo.addEventListener('error', ()=>{
+    videoWarning.classList.add('show');
+  });
+
   function closeModal(){
     modalOverlay.classList.remove('open');
     modalVideo.pause();
     modalVideo.removeAttribute('src');
     modalVideo.load();
+    videoWarning.classList.remove('show');
   }
   modalClose.addEventListener('click', closeModal);
   modalOverlay.addEventListener('click', e=>{ if(e.target === modalOverlay) closeModal(); });

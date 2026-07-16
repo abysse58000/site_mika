@@ -77,6 +77,27 @@
           "thumbnail": null,
           "duration": null,
           "format": "mkv"
+        },
+        {
+          "title": "Starship Troopers (1997)",
+          "file": "Films/Starship Troopers (1997).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
+          "title": "Starship Troopers 2 Héros de la Fédération (2004)",
+          "file": "Films/Starship Troopers 2  Héros de la Fédération (2004).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
+          "title": "Starship Troopers 3 Marauder (2008)",
+          "file": "Films/Starship Troopers 3  Marauder (2008).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
         }
       ]
     }

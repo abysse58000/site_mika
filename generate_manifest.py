@@ -12,7 +12,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-VIDEO_EXTENSIONS = {".mp4", ".webm", ".ogv", ".ogg", ".mov", ".m4v"}
+VIDEO_EXTENSIONS = {".mp4", ".webm", ".ogv", ".ogg", ".mov", ".m4v", ".mkv"}
 THUMBNAIL_DIRNAME = ".thumbnails"
 DEFAULT_CATEGORY = "Vidéos"
 
@@ -83,6 +83,7 @@ def scan(root: Path, with_thumbnails: bool):
             "file": rel_file,
             "thumbnail": thumbnail_rel,
             "duration": duration,
+            "format": file_path.suffix.lower().lstrip("."),
         })
 
     # Fichiers directement à la racine
@@ -121,7 +122,11 @@ def main():
     out_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
 
     total = sum(len(c["videos"]) for c in manifest["categories"])
+    total_mkv = sum(1 for c in manifest["categories"] for v in c["videos"] if v.get("format") == "mkv")
     print(f"✅ manifest.json généré : {total} vidéo(s) dans {len(manifest['categories'])} catégorie(s).")
+    if total_mkv:
+        print(f"   ⚠️  {total_mkv} fichier(s) .mkv détecté(s) : la lecture dans le navigateur "
+              f"n'est pas garantie (voir README / avertissement dans le site).")
     print(f"   → {out_path}")
 
 

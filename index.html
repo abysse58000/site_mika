@@ -515,6 +515,11 @@
   // Attention à bien utiliser HTTPS si ton site GitHub Pages est en HTTPS.
   const NAS_URL = "https://radioswebmp3.synology.me:8443/site_mika";
 
+  // Chemin du manifest.json sur le NAS. Par défaut on suppose qu'il est
+  // au même endroit que les vidéos (site_mika/manifest.json).
+  // Change ce chemin si ton manifest.json est ailleurs sur le NAS.
+  const MANIFEST_URL = NAS_URL + "/manifest.json";
+
   const gridWrap = document.getElementById('gridWrap');
   const chipsEl = document.getElementById('chips');
   const searchInput = document.getElementById('searchInput');
@@ -564,12 +569,20 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/><circle cx="12" cy="5.2" r="1.3"/><circle cx="12" cy="18.8" r="1.3"/><circle cx="18.8" cy="12" r="1.3"/><circle cx="5.2" cy="12" r="1.3"/></svg>
       <h2>Chargement…</h2></div>`;
     try{
-      // Chargé depuis GitHub Pages (local au site) pour éviter les blocages CORS
-      const res = await fetch('manifest.json?_=' + Date.now());
+      // Chargé directement depuis le NAS (au lieu du fichier local sur GitHub Pages)
+      const res = await fetch(MANIFEST_URL + '?_=' + Date.now());
       if(!res.ok) throw new Error('no manifest');
       manifest = await res.json();
     }catch(e){
+      console.error('Impossible de charger manifest.json depuis le NAS :', e);
       manifest = { categories: [] };
+      gridWrap.innerHTML = `<div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r="0.6" fill="currentColor" stroke="none"/></svg>
+        <h2>Impossible de joindre le NAS</h2>
+        <p>Vérifie que <code>${escapeHtml(MANIFEST_URL)}</code> est accessible depuis ce navigateur<br>
+        (certificat HTTPS valide, port ouvert, pas de blocage CORS côté NAS).</p>
+      </div>`;
+      return;
     }
     renderChips();
     render();

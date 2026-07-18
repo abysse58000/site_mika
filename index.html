@@ -569,7 +569,7 @@
       </div>
       <div class="video-warning" id="videoWarning">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r="0.6" fill="currentColor" stroke="none"/></svg>
-        <span>Ce fichier est au format <strong>.mkv</strong> : certains navigateurs ne savent pas le lire directement (image noire ou son sans image). Si ça ne fonctionne pas ici, essaie de télécharger le fichier et de l'ouvrir avec VLC, ou lance une conversion en .mp4 sur le NAS.</span>
+        <span>Ce fichier ne se lit pas directement dans ce navigateur (image noire ou son sans image). Essaie de le télécharger et de l'ouvrir avec VLC, ou lance une conversion en .mp4 sur le NAS.</span>
       </div>
     </div>
   </div>
@@ -711,13 +711,10 @@
         const poster = v.thumbnail
           ? `<img src="${NAS_URL}/${encodeURI(v.thumbnail)}" alt="">`
           : `<span class="initials">${escapeHtml(initials(v.title))}</span>`;
-        const ext = (v.format || getExt(v.file));
-        const badge = ext ? `<span class="format-badge ${ext==='mkv'?'mkv':''}">${escapeHtml(ext)}</span>` : '';
         html += `
-          <div class="card" style="--accent:${accent}; --i:${idx};" tabindex="0" role="button" data-file="${encodeURI(v.file)}" data-title="${escapeHtml(v.title)}" data-ext="${escapeHtml(ext)}">
+          <div class="card" style="--accent:${accent}; --i:${idx};" tabindex="0" role="button" data-file="${encodeURI(v.file)}" data-title="${escapeHtml(v.title)}">
             <div class="poster">
               ${poster}
-              ${badge}
               <div class="play">${playIcon}</div>
             </div>
             <div class="card-body">
@@ -735,13 +732,13 @@
     gridWrap.innerHTML = html;
 
     gridWrap.querySelectorAll('.card').forEach(card=>{
-      const open = ()=> openModal(card.dataset.file, card.dataset.title, card.dataset.ext);
+      const open = ()=> openModal(card.dataset.file, card.dataset.title);
       card.addEventListener('click', open);
       card.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); } });
     });
   }
 
-  function openModal(file, title, ext){
+  function openModal(file, title){
     modalTitle.textContent = title;
     videoWarning.classList.remove('show');
     screenEl.classList.remove('open'); // rideau fermé au départ
@@ -749,10 +746,6 @@
     modalVideo.src = NAS_URL + '/' + file;
     modalOverlay.classList.add('open');
 
-    // Le format .mkv n'est pas garanti lisible nativement par la balise <video>.
-    if(ext === 'mkv'){
-      videoWarning.classList.add('show');
-    }
     modalVideo.play().catch(()=>{
       videoWarning.classList.add('show');
     });

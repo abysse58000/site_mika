@@ -47,7 +47,7 @@
     transition:background .3s ease,color .3s ease;
   }
   ::selection{background:var(--pink);color:#fff}
-  a{color:inherit}
+  a{color:inherit;text-decoration:none}
 
   .blob{
     position:fixed;
@@ -95,11 +95,17 @@
     z-index:2;
     padding:12px 20px;
     display:flex;
-    justify-content:flex-end;
+    justify-content:space-between;
     align-items:center;
     border-bottom:1px solid var(--line);
   }
-  .theme-toggle{
+  .header-controls{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .theme-toggle,
+  .history-toggle{
     background:var(--surface);
     border:2px solid var(--line);
     color:var(--ink);
@@ -112,11 +118,11 @@
     align-items:center;
     justify-content:center;
   }
-  .theme-toggle:hover{transform:scale(1.05);border-color:var(--pink)}
+  .theme-toggle:hover,.history-toggle:hover{transform:scale(1.05);border-color:var(--pink)}
 
   .marquee{
     position:relative;
-    padding:44px 60px 30px;
+    padding:30px 60px 20px;
     text-align:center;
     border-bottom:1px solid var(--line);
     overflow:hidden;
@@ -194,7 +200,7 @@
   .controls{
     max-width:1180px;
     margin:0 auto;
-    padding:30px 40px 6px;
+    padding:20px 40px 6px;
     display:flex;
     flex-direction:column;
     gap:18px;
@@ -227,7 +233,8 @@
   }
   .search-row input::placeholder{color:var(--muted)}
   
-  .sort-select{
+  .sort-select,
+  .duration-filter{
     background:var(--surface);
     border:2px solid var(--line);
     color:var(--ink);
@@ -238,7 +245,7 @@
     cursor:pointer;
     transition:border-color .2s;
   }
-  .sort-select:focus{border-color:var(--blue);outline:none}
+  .sort-select:focus,.duration-filter:focus{border-color:var(--blue);outline:none}
   
   .filter-chips{display:flex;flex-wrap:wrap;gap:10px}
   .filter-chip{
@@ -376,6 +383,12 @@
     z-index:4;
     pointer-events:none;
   }
+  
+  .card.rated-1::after{content:"★";position:absolute;top:8px;left:8px;font-size:.9rem;color:var(--orange);z-index:4;pointer-events:none}
+  .card.rated-2::after{content:"★★";position:absolute;top:8px;left:8px;font-size:.9rem;color:var(--orange);z-index:4;pointer-events:none}
+  .card.rated-3::after{content:"★★★";position:absolute;top:8px;left:8px;font-size:.9rem;color:var(--orange);z-index:4;pointer-events:none}
+  .card.rated-4::after{content:"★★★★";position:absolute;top:8px;left:8px;font-size:.9rem;color:var(--orange);z-index:4;pointer-events:none}
+  .card.rated-5::after{content:"★★★★★";position:absolute;top:8px;left:8px;font-size:.9rem;color:var(--yellow);z-index:4;pointer-events:none}
 
   .poster{
     position:relative;
@@ -454,6 +467,27 @@
   .favorite-btn.active{background:var(--yellow);color:#fff}
   .favorite-btn svg{width:16px;height:16px;fill:currentColor}
   .card.favorite .favorite-btn{display:none}
+  
+  .rating-stars{
+    position:absolute;
+    bottom:8px;
+    left:8px;
+    display:flex;
+    gap:2px;
+    z-index:4;
+    opacity:0;
+    transition:.2s ease;
+    pointer-events:none;
+  }
+  .card:hover .rating-stars{opacity:1}
+  .rating-stars .star{
+    color:var(--orange);
+    font-size:1rem;
+    cursor:pointer;
+    pointer-events:auto;
+  }
+  .rating-stars .star:hover,
+  .rating-stars .star.active{color:var(--yellow)}
 
   .format-badge{
     position:absolute;
@@ -494,6 +528,22 @@
     justify-content:space-between;
   }
   .card-meta span:first-child{color:var(--accent,var(--purple));font-weight:600}
+
+  .watched-badge{
+    position:absolute;
+    top:14px;
+    left:8px;
+    background:rgba(0,214,143,.2);
+    border:1px solid var(--green);
+    color:var(--green);
+    font-family:'JetBrains Mono',monospace;
+    font-size:.6rem;
+    font-weight:700;
+    padding:2px 5px;
+    border-radius:4px;
+    z-index:3;
+    pointer-events:none;
+  }
 
   .empty{
     text-align:center;
@@ -554,7 +604,9 @@
     display:flex;
     gap:10px;
   }
-  .modal-close,.download-btn{
+  .modal-close,
+  .download-btn,
+  .autoplay-toggle{
     background:var(--surface);
     border:2px solid var(--line);
     color:var(--ink);
@@ -571,7 +623,10 @@
   }
   .modal-close:hover{border-color:var(--pink);color:var(--pink);transform:rotate(90deg)}
   .download-btn:hover{background:var(--green);border-color:var(--green);color:#fff;transform:scale(1.05)}
+  .autoplay-toggle:hover{background:var(--blue);border-color:var(--blue);color:#fff;transform:scale(1.05)}
+  .autoplay-toggle.active{background:var(--blue);border-color:var(--blue);color:#fff}
   .download-btn svg{width:18px;height:18px}
+  .autoplay-toggle svg{width:18px;height:18px}
 
   .screen{
     position:relative;
@@ -618,6 +673,34 @@
   .video-warning.show{display:flex}
   .video-warning svg{width:20px;height:20px;flex-shrink:0;margin-top:1px}
   .video-warning a{color:var(--purple);text-decoration:underline}
+
+  .rating-modal{
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(28,16,48,.95);
+    padding:16px 24px;
+    border-radius:12px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+    z-index:10;
+    backdrop-filter:blur(10px);
+  }
+  .rating-modal .star{
+    color:var(--orange);
+    font-size:1.4rem;
+    cursor:pointer;
+    transition:.2s ease;
+  }
+  .rating-modal .star:hover,
+  .rating-modal .star.active{color:var(--yellow);transform:scale(1.2)}
+  .rating-modal span{
+    color:var(--ink);
+    font-size:.9rem;
+    font-weight:500;
+  }
 
   .favorites-sidebar{
     position:fixed;
@@ -769,6 +852,98 @@
     align-items:center;
     justify-content:center;
   }
+  
+  .history-sidebar{
+    position:fixed;
+    top:0;bottom:0;
+    left:0;
+    width:320px;
+    background:var(--surface);
+    border-right:1px solid var(--line);
+    z-index:99;
+    transform:translateX(-100%);
+    transition:transform .3s ease;
+    display:flex;
+    flex-direction:column;
+    box-shadow:4px 0 20px rgba(0,0,0,.1);
+  }
+  .history-sidebar.open{transform:translateX(0)}
+  .history-header{
+    padding:20px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .history-header h3{
+    font-family:'Bebas Neue',sans-serif;
+    letter-spacing:.05em;
+    font-size:1.4rem;
+    color:var(--blue);
+    margin:0;
+  }
+  .history-close{
+    background:none;
+    border:none;
+    color:var(--ink);
+    font-size:1.5rem;
+    cursor:pointer;
+    padding:4px;
+    line-height:1;
+  }
+  .history-list{
+    padding:16px;
+    overflow-y:auto;
+    flex:1;
+  }
+  .history-item{
+    display:flex;
+    gap:12px;
+    padding:12px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    transition:background .2s;
+    border:1px solid transparent;
+    align-items:center;
+  }
+  .history-item:hover{background:var(--surface-2);border-color:var(--line)}
+  .history-item .hist-poster{
+    width:60px;height:40px;
+    border-radius:8px;
+    background:var(--surface-2);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    flex-shrink:0;
+  }
+  .history-item .hist-poster img{width:100%;height:100%;object-fit:cover}
+  .history-item .hist-poster .initials{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:1.2rem;
+    color:var(--blue);
+    opacity:.6;
+  }
+  .history-item .hist-info{flex:1;min-width:0}
+  .history-item .hist-title{
+    font-size:.85rem;
+    font-weight:600;
+    margin:0 0 4px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .history-item .hist-date{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.7rem;
+    color:var(--muted);
+  }
+  .history-empty{
+    text-align:center;
+    padding:40px 20px;
+    color:var(--muted);
+    font-size:.9rem;
+  }
 
   @media (max-width:800px){
     .header-top{justify-content:flex-end}
@@ -776,10 +951,11 @@
     .controls{padding:16px 20px}
     .search-row{flex-direction:column;width:100%}
     .search-row input{width:100%}
-    .sort-select{width:100%}
+    .sort-select,.duration-filter{width:100%}
     .grid-wrap{padding:16px 20px 70px}
-    .favorites-sidebar{width:100%}
+    .favorites-sidebar,.history-sidebar{width:100%}
     .favorites-toggle{bottom:16px;right:16px;width:50px;height:50px;font-size:1.2rem}
+    .history-toggle{display:none}
   }
   @media (max-width:560px){
     .stats-bar{display:none}
@@ -787,6 +963,8 @@
     .marquee h1{font-size:clamp(2rem,8vw,3rem)}
     .marquee p{font-size:.85rem}
     .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+    .rating-stars{display:none}
+    .card .favorite-btn{display:none}
   }
 </style>
 </head>
@@ -801,6 +979,7 @@
   <div class="reel-rail right"></div>
 
   <div class="header-top">
+    <button class="history-toggle" id="historyToggle" title="Historique">📜</button>
     <button class="theme-toggle" id="themeToggle" title="Changer de thème">🌓</button>
   </div>
 
@@ -836,6 +1015,14 @@
         <option value="title-desc">Titre (Z-A)</option>
         <option value="duration-asc">Durée (↑)</option>
         <option value="duration-desc">Durée (↓)</option>
+        <option value="rating-desc">Note (↓)</option>
+        <option value="watched">Dernières vues</option>
+      </select>
+      <select class="duration-filter" id="durationFilter">
+        <option value="all">Toutes durées</option>
+        <option value="short">Courtes (&lt;30min)</option>
+        <option value="medium">Moyennes (30min-2h)</option>
+        <option value="long">Longues (&gt;2h)</option>
       </select>
       <button class="refresh-btn" id="refreshBtn" title="Recharger">↻ Recharger</button>
     </div>
@@ -861,7 +1048,7 @@
   </main>
 
   <footer>
-    <p>Un cinéma privé • <code>v2.0 - Superchargé</code></p>
+    <p>Un cinéma privé • <code>v3.0 - Niveau 1 Complète</code></p>
   </footer>
 
   <div class="favorites-sidebar" id="favoritesSidebar">
@@ -877,6 +1064,19 @@
     </div>
   </div>
 
+  <div class="history-sidebar" id="historySidebar">
+    <div class="history-header">
+      <h3>📜 Historique</h3>
+      <button class="history-close" id="historyClose">&times;</button>
+    </div>
+    <div class="history-list" id="historyList">
+      <div class="history-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <p>Aucun historique pour le moment</p>
+      </div>
+    </div>
+  </div>
+
   <button class="favorites-toggle" id="favoritesToggle" title="Mes favoris">⭐<span class="count" id="favCount">0</span></button>
 
   <div class="modal-overlay" id="modalOverlay">
@@ -884,6 +1084,7 @@
       <div class="modal-head">
         <h3 id="modalTitle">Titre</h3>
         <div class="modal-actions">
+          <button class="autoplay-toggle" id="autoplayToggle" title="Lecture en continu">▶️</button>
           <button class="download-btn" id="downloadBtn" title="Télécharger">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </button>
@@ -894,6 +1095,16 @@
         <div class="curtain curtain-left"></div>
         <div class="curtain curtain-right"></div>
         <video id="modalVideo" controls playsinline></video>
+        <div class="rating-modal" id="ratingModal">
+          <span>Note cette vidéo :</span>
+          <div class="stars">
+            <span class="star" data-rating="1">★</span>
+            <span class="star" data-rating="2">★</span>
+            <span class="star" data-rating="3">★</span>
+            <span class="star" data-rating="4">★</span>
+            <span class="star" data-rating="5">★</span>
+          </div>
+        </div>
       </div>
       <div class="video-warning" id="videoWarning">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16" r="0.6" fill="currentColor" stroke="none"/></svg>
@@ -901,6 +1112,7 @@
       </div>
     </div>
   </div>
+
 
 <script>
 (function(){
@@ -928,18 +1140,29 @@ const favClose = document.getElementById('favoritesClose');
 const favCount = document.getElementById('favCount');
 const themeToggle = document.getElementById('themeToggle');
 const sortSelect = document.getElementById('sortSelect');
+const durationFilter = document.getElementById('durationFilter');
 const filterChips = document.getElementById('filterChips');
 const statsBar = document.getElementById('statsBar');
 const totalVideosEl = document.getElementById('totalVideos');
 const totalDurationEl = document.getElementById('totalDuration');
 const favoritesCountEl = document.getElementById('favoritesCount');
 const downloadBtn = document.getElementById('downloadBtn');
+const autoplayToggle = document.getElementById('autoplayToggle');
+const ratingModal = document.getElementById('ratingModal');
+const historySidebar = document.getElementById('historySidebar');
+const historyList = document.getElementById('historyList');
+const historyToggle = document.getElementById('historyToggle');
+const historyClose = document.getElementById('historyClose');
 
 let manifest = { categories: [] };
 let activeCategory = 'ALL';
 let searchTimeout = null;
 let currentSort = 'default';
+let currentDurationFilter = 'all';
 let activeFilters = { mp4: true, mkv: true };
+let autoplayEnabled = false;
+let currentVideoIndex = -1;
+let allVideosFlat = [];
 
 function getCatColor(name) {
   const idx = manifest.categories.findIndex(c => c.name === name);
@@ -994,7 +1217,7 @@ function toggleFavorite(file, title, thumbnail, category, duration) {
   if (index > -1) {
     favs.splice(index, 1);
   } else {
-    favs.push({ file, title, thumbnail, category, duration });
+    favs.push({ file, title, thumbnail, category, duration, date: Date.now() });
   }
   saveFavorites(favs);
   render();
@@ -1006,6 +1229,46 @@ function removeFavorite(file, event) {
   let favs = loadFavorites().filter(f => f.file !== file);
   saveFavorites(favs);
   renderFavorites();
+  render();
+}
+
+function loadWatchHistory() {
+  return JSON.parse(localStorage.getItem('watchHistory') || '[]');
+}
+
+function saveWatchHistory(history) {
+  localStorage.setItem('watchHistory', JSON.stringify(history));
+}
+
+function addToHistory(file, title, thumbnail, category, duration) {
+  let history = loadWatchHistory();
+  const existingIndex = history.findIndex(h => h.file === file);
+  if (existingIndex > -1) {
+    history[existingIndex].date = Date.now();
+  } else {
+    history.push({ file, title, thumbnail, category, duration, date: Date.now() });
+  }
+  saveWatchHistory(history);
+  renderHistory();
+}
+
+function loadRatings() {
+  return JSON.parse(localStorage.getItem('ratings') || '{}');
+}
+
+function saveRatings(ratings) {
+  localStorage.setItem('ratings', JSON.stringify(ratings));
+}
+
+function getRating(file) {
+  const ratings = loadRatings();
+  return ratings[file] || 0;
+}
+
+function setRating(file, rating) {
+  const ratings = loadRatings();
+  ratings[file] = rating;
+  saveRatings(ratings);
   render();
 }
 
@@ -1022,6 +1285,24 @@ function applySort(videos) {
     case 'title-desc': return [...videos].sort((a, b) => b.title.localeCompare(a.title));
     case 'duration-asc': return [...videos].sort((a, b) => (a.duration || 0) - (b.duration || 0));
     case 'duration-desc': return [...videos].sort((a, b) => (b.duration || 0) - (a.duration || 0));
+    case 'rating-desc': return [...videos].sort((a, b) => (getRating(b.file) || 0) - (getRating(a.file) || 0));
+    case 'watched': {
+      const history = loadWatchHistory();
+      return [...videos].sort((a, b) => {
+        const aDate = history.find(h => h.file === a.file)?.date || 0;
+        const bDate = history.find(h => h.file === b.file)?.date || 0;
+        return bDate - aDate;
+      });
+    }
+    default: return videos;
+  }
+}
+
+function applyDurationFilter(videos) {
+  switch(currentDurationFilter) {
+    case 'short': return videos.filter(v => (v.duration || 0) < 1800); // < 30 min
+    case 'medium': return videos.filter(v => (v.duration || 0) >= 1800 && (v.duration || 0) <= 7200); // 30min - 2h
+    case 'long': return videos.filter(v => (v.duration || 0) > 7200); // > 2h
     default: return videos;
   }
 }
@@ -1062,6 +1343,32 @@ function renderFavorites() {
   });
 }
 
+function renderHistory() {
+  const history = loadWatchHistory();
+  if (history.length === 0) {
+    historyList.innerHTML = `<div class="history-empty">${starIcon}<p>Aucun historique pour le moment</p></div>`;
+    return;
+  }
+  historyList.innerHTML = history.slice().reverse().map(h => `
+    <div class="history-item" data-file="${encodeURI(h.file)}">
+      <div class="hist-poster">
+        ${h.thumbnail ? `<img src="${NAS_URL}/${encodeURI(h.thumbnail)}" alt="" loading="lazy">` : `<span class="initials">${escapeHtml(getInitials(h.title))}</span>`}
+      </div>
+      <div class="hist-info">
+        <div class="hist-title">${escapeHtml(h.title)}</div>
+        <div class="hist-date">${formatDuration(h.duration)} • ${new Date(h.date).toLocaleDateString('fr-FR')}</div>
+      </div>
+    </div>
+  `).join('');
+
+  historyList.querySelectorAll('.history-item').forEach(item => {
+    item.addEventListener('click', () => {
+      openModal(item.dataset.file, item.querySelector('.hist-title').textContent);
+      closeHistory();
+    });
+  });
+}
+
 function closeFavorites() {
   favSidebar.classList.remove('open');
 }
@@ -1069,6 +1376,15 @@ function closeFavorites() {
 function openFavorites() {
   favSidebar.classList.add('open');
   renderFavorites();
+}
+
+function closeHistory() {
+  historySidebar.classList.remove('open');
+}
+
+function openHistory() {
+  historySidebar.classList.add('open');
+  renderHistory();
 }
 
 function loadTheme() {
@@ -1084,6 +1400,7 @@ async function loadManifest() {
     const res = await fetch(MANIFEST_URL + '?_=' + Date.now());
     if (!res.ok) throw new Error('no manifest');
     manifest = await res.json();
+    allVideosFlat = manifest.categories.flatMap(c => c.videos);
   } catch(e) {
     console.error('Impossible de charger manifest.json :', e);
     manifest = { categories: [] };
@@ -1095,6 +1412,7 @@ async function loadManifest() {
   render();
   updateStats();
   renderFavorites();
+  renderHistory();
 }
 
 function renderChips() {
@@ -1116,10 +1434,11 @@ function renderChips() {
 function render() {
   const query = searchInput.value.trim().toLowerCase();
   const cats = manifest.categories
-    .filter(c => activeCategory === 'ALL' || c.name === activeCategory)
+    .filter(cat => activeCategory === 'ALL' || cat.name === activeCategory)
     .map(cat => {
       let videos = cat.videos.filter(v => v.title.toLowerCase().includes(query));
       videos = applyFilters(videos);
+      videos = applyDurationFilter(videos);
       videos = applySort(videos);
       return { name: cat.name, videos: videos };
     })
@@ -1140,17 +1459,26 @@ function render() {
     html += '<div class="grid">';
     cat.videos.forEach(v => {
       const isFav = isFavorite(v.file);
+      const rating = getRating(v.file);
+      const isWatched = loadWatchHistory().some(h => h.file === v.file);
       const poster = v.thumbnail
         ? `<img src="${NAS_URL}/${encodeURI(v.thumbnail)}" alt="" loading="lazy">`
         : `<span class="initials">${escapeHtml(getInitials(v.title))}</span>`;
       const extClass = v.format === 'mkv' ? 'mkv' : '';
+      const rateClass = rating > 0 ? `rated-${rating}` : '';
       
       html += `
-        <div class="card ${isFav ? 'favorite' : ''}" style="--accent:${accent};--i:${idx};" tabindex="0" role="button" data-file="${encodeURI(v.file)}" data-title="${escapeHtml(v.title)}" data-category="${escapeHtml(cat.name)}" data-duration="${v.duration}" data-thumbnail="${v.thumbnail || ''}">
+        <div class="card ${isFav ? 'favorite' : ''} ${rateClass}" style="--accent:${accent};--i:${idx};" tabindex="0" role="button" 
+             data-file="${encodeURI(v.file)}" data-title="${escapeHtml(v.title)}" data-category="${escapeHtml(cat.name)}" 
+             data-duration="${v.duration}" data-thumbnail="${v.thumbnail || ''}" data-index="${idx}">
           <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${encodeURI(v.file)}', '${escapeHtml(v.title)}', '${v.thumbnail || ''}', '${escapeHtml(cat.name)}', ${v.duration || 0}, event)" title="${isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}">${starIcon}</button>
+          ${isWatched ? '<span class="watched-badge">✓</span>' : ''}
           <div class="poster">
             ${poster}
             <div class="play">${playIcon}</div>
+            <div class="rating-stars">
+              ${[1,2,3,4,5].map(r => `<span class="star ${r <= rating ? 'active' : ''}" onclick="setRating('${encodeURI(v.file)}', ${r}, event)" data-rating="${r}">★</span>`).join('')}
+            </div>
           </div>
           <div class="card-body">
             <p class="card-title">${escapeHtml(v.title)}</p>
@@ -1168,9 +1496,9 @@ function render() {
   gridWrap.innerHTML = html;
 
   gridWrap.querySelectorAll('.card').forEach(card => {
-    const open = () => openModal(card.dataset.file, card.dataset.title);
+    const open = () => openModal(card.dataset.file, card.dataset.title, parseInt(card.dataset.index));
     card.addEventListener('click', e => {
-      if (!e.target.closest('.favorite-btn')) open();
+      if (!e.target.closest('.favorite-btn') && !e.target.closest('.star')) open();
     });
     card.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -1181,20 +1509,49 @@ function render() {
   });
 }
 
-function openModal(file, title) {
+function openModal(file, title, index) {
   modalTitleEl.textContent = title;
   videoWarning.classList.remove('show');
   screenEl.classList.remove('open');
   modalVideo.src = NAS_URL + '/' + file;
   modalOverlay.classList.add('open');
   
+  currentVideoIndex = index !== undefined ? index : allVideosFlat.findIndex(v => v.file === file);
+  
   downloadBtn.onclick = () => {
     window.open(NAS_URL + '/' + file, '_blank');
   };
   
+  autoplayToggle.classList.toggle('active', autoplayEnabled);
+  autoplayToggle.onclick = () => {
+    autoplayEnabled = !autoplayEnabled;
+    autoplayToggle.classList.toggle('active', autoplayEnabled);
+  };
+  
+  ratingModal.style.display = 'flex';
+  const currentRating = getRating(file);
+  ratingModal.querySelectorAll('.star').forEach(star => {
+    const rating = parseInt(star.dataset.rating);
+    star.classList.toggle('active', rating <= currentRating);
+    star.onclick = () => {
+      setRating(file, rating);
+      ratingModal.querySelectorAll('.star').forEach(s => {
+        s.classList.toggle('active', parseInt(s.dataset.rating) <= rating);
+      });
+    };
+  });
+  
   modalVideo.play().catch(() => {
     videoWarning.classList.add('show');
   });
+  
+  modalVideo.onended = () => {
+    addToHistory(file, title, '', '', 0);
+    if (autoplayEnabled && currentVideoIndex > -1 && currentVideoIndex < allVideosFlat.length - 1) {
+      const nextVideo = allVideosFlat[currentVideoIndex + 1];
+      setTimeout(() => openModal(nextVideo.file, nextVideo.title, currentVideoIndex + 1), 2000);
+    }
+  };
   
   requestAnimationFrame(() => {
     setTimeout(() => screenEl.classList.add('open'), 120);
@@ -1212,6 +1569,7 @@ function closeModal() {
   modalVideo.removeAttribute('src');
   modalVideo.load();
   videoWarning.classList.remove('show');
+  ratingModal.style.display = 'none';
 }
 
 modalClose.addEventListener('click', closeModal);
@@ -1219,7 +1577,11 @@ modalOverlay.addEventListener('click', e => {
   if (e.target === modalOverlay) closeModal();
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') {
+    closeModal();
+    closeFavorites();
+    closeHistory();
+  }
 });
 
 // Theme toggle
@@ -1234,6 +1596,12 @@ themeToggle.addEventListener('click', () => {
 // Sort select
 sortSelect.addEventListener('change', () => {
   currentSort = sortSelect.value;
+  render();
+});
+
+// Duration filter
+durationFilter.addEventListener('change', () => {
+  currentDurationFilter = durationFilter.value;
   render();
 });
 
@@ -1258,8 +1626,12 @@ favClose.addEventListener('click', closeFavorites);
 favSidebar.addEventListener('click', e => {
   if (e.target === favSidebar) closeFavorites();
 });
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeFavorites();
+
+// History toggle
+historyToggle.addEventListener('click', openHistory);
+historyClose.addEventListener('click', closeHistory);
+historySidebar.addEventListener('click', e => {
+  if (e.target === historySidebar) closeHistory();
 });
 
 refreshBtn.addEventListener('click', loadManifest);
@@ -1272,6 +1644,7 @@ loadManifest();
 // Make functions globally accessible
 window.toggleFavorite = toggleFavorite;
 window.removeFavorite = removeFavorite;
+window.setRating = setRating;
 })();
 </script>
 </body>

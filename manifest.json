@@ -72,6 +72,41 @@
       "name": "Films",
       "videos": [
         {
+          "title": "Alien vs. Predator (2004)",
+          "file": "Films/Alien vs. Predator (2004).mkv",
+          "thumbnail": null,
+          "duration": 6521,
+          "format": "mkv"
+        },
+        {
+          "title": "Aliens vs. Predator Requiem (2007)",
+          "file": "Films/Aliens vs. Predator - Requiem (2007).mkv",
+          "thumbnail": null,
+          "duration": 5625,
+          "format": "mkv"
+        },
+        {
+          "title": "Apocalypse of Ice (2020)",
+          "file": "Films/Apocalypse of Ice (2020).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
+          "title": "Avengers Endgame (2019)",
+          "file": "Films/Avengers  Endgame (2019).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
+          "title": "God Save the Tuche (2025)",
+          "file": "Films/God Save the Tuche (2025).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
           "title": "Into the Deep (2025)",
           "file": "Films/Into the Deep (2025).mkv",
           "thumbnail": null,
@@ -79,8 +114,50 @@
           "format": "mkv"
         },
         {
+          "title": "Le Monde de Nemo (2003)",
+          "file": "Films/Le Monde de Nemo (2003).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
+          "title": "Les Bodin's en folie",
+          "file": "Films/Les Bodin's en folie.mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
+          "title": "Lucy (2014)",
+          "file": "Films/Lucy (2014).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
+          "title": "Minecraft, Le Film (2025)",
+          "file": "Films/Minecraft, Le Film (2025).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
+          "title": "Mission Impossible The Final Reckoning",
+          "file": "Films/Mission Impossible The Final Reckoning.mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
           "title": "Moonfall (2022)",
           "file": "Films/Moonfall (2022).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
+          "title": "Mylène Farmer Nevermore Le film (2024)",
+          "file": "Films/Mylène Farmer  Nevermore - Le film (2024).mkv",
           "thumbnail": null,
           "duration": null,
           "format": "mkv"
@@ -128,10 +205,38 @@
           "format": "mkv"
         },
         {
+          "title": "Terminator 2 Le Jugement dernier (1991)",
+          "file": "Films/Terminator 2 - Le Jugement dernier (1991).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
+          "title": "Terminator Genisys (2015)",
+          "file": "Films/Terminator Genisys (2015).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
+          "title": "Terminator Renaissance (2009)",
+          "file": "Films/Terminator Renaissance (2009).mkv",
+          "thumbnail": null,
+          "duration": null,
+          "format": "mkv"
+        },
+        {
           "title": "The Devil's Rejects (2005)",
           "file": "Films/The Devil's Rejects (2005).mkv",
           "thumbnail": null,
           "duration": 6381,
+          "format": "mkv"
+        },
+        {
+          "title": "Voyage de Fin D'Année Majorque (2025)",
+          "file": "Films/Voyage de Fin D'Année  Majorque (2025).mkv",
+          "thumbnail": null,
+          "duration": null,
           "format": "mkv"
         }
       ]
